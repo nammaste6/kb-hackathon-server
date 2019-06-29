@@ -11,6 +11,7 @@ var db_con = require('../db/db_con')();
 
 var connection = db_con.init();
 
+// mbti 선호도 bulk data learning
 router.get('/mbti', function(req, res, next) {
 
   console.log("####### MBTI DATA BATCH START #######");
@@ -85,7 +86,7 @@ router.get('/mbti', function(req, res, next) {
   function(err, obj){});
 });
 
-
+// 결제 선호도 bulk data learning
 router.get('/pay', function(req, res, next) {
 
   console.log("####### PAY DATA BATCH START #######");
@@ -123,6 +124,5 @@ router.get('/pay', function(req, res, next) {
   ], function() {});
 
 });
-
 
 module.exports = router;

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+var glob = require("glob")
 var fs = require('fs');
 var readline = require('readline');
 var async = require('async');
@@ -11,10 +12,7 @@ var db_con = require('../db/db_con')();
 
 var connection = db_con.init();
 
-function loadingModel(path) {
-
-}
-
+// mbti 단일 데이터 학습
 router.get('/learn/mbti', function(req, res, next) {
 
   fs.readFile('/Users/kaylee/jsproj/kb-hackathon-server/kb-server/models/bayes.json', function() {
@@ -40,12 +38,13 @@ router.get('/learn/mbti', function(req, res, next) {
     console.log("####### UPDATE MBTI DATA ML MODEL #######");
     fs.writeFile("/Users/kaylee/jsproj/kb-hackathon-server/kb-server/models/cf.json", JSON.stringify(model), function(err) {});
       if(!err) {
-        req.send({'success', true});
+        req.send({'success': true});
       }
   });
 
 });
 
+// pay 단일 데이터 학습
 router.get('/learn/pay', function(req, res, next) {
 
   fs.readFile('/Users/kaylee/jsproj/kb-hackathon-server/kb-server/models/bayes.json', function() {
@@ -67,7 +66,7 @@ router.get('/learn/pay', function(req, res, next) {
     console.log("####### UPDATE PAY DATA ML MODEL #######");
     fs.writeFile("/Users/kaylee/jsproj/kb-hackathon-server/kb-server/models/bayes.json", JSON.stringify(model), function(err) { 
       if(!err) {
-        req.send({'success', true});
+        req.send({'success': true});
       }
     });
 
@@ -75,7 +74,8 @@ router.get('/learn/pay', function(req, res, next) {
 
 });
 
-router.get('/recommend', function(req, res, next) {
+// mbti별로 위치 추천
+router.get('/recommend/place', function(req, res, next) {
   var uno = req.query.uno;
 
   var stmt = `SELECT * FROM person_info WHERE uno = ${uno}`;
@@ -138,6 +138,48 @@ router.get('/recommend', function(req, res, next) {
         }
         res.send(result);
       }
+    });
+  });
+});
+
+// 구매 패턴으로 구매 mbti 추천
+router.get('/recommend/pay_mbti', function(req, res, next) {
+
+  glob("/Users/kaylee/Downloads/pay_sum/*.json", {}, function (er, files) {
+    var lr = readline.createInterface({
+      input : fs.createReadStream(files[0])
+    });
+
+    lr.on('line', function(line){
+      var pay_tendency = JSON.parse(line);
+      var uno = pay_tendency.uno;
+
+      delete pay_tendency.uno; 
+
+      for( prop in pay_tendency ) {
+        var n_v = pay_tendency[prop].toPrecision(2);
+        pay_tendency[prop] = n_v;
+      }
+
+      var rline = readline.createInterface({
+        input : fs.createReadStream("/Users/kaylee/jsproj/kb-hackathon-server/kb-server/models/bayes.json")
+      });
+
+      rline.on('line', function(l) {
+        let bayes = new Bayes();
+
+        bayes.setModel(JSON.parse(l));
+        var pay_mbti = bayes.test(pay_tendency);
+        var pay_tendency_str = JSON.stringify(pay_tendency);
+
+        var stmt = `UPDATE person_info SET pay_mbti = '${pay_mbti}', pay_tendency = '${pay_tendency_str}' WHERE uno = ${uno}`;
+
+        connection.query(stmt, function(err, result) {
+          if(!err) {
+            res.send({'success' : true});
+          }
+        });
+      });
     });
   });
 });

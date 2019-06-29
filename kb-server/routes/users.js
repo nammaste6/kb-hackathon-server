@@ -14,6 +14,7 @@ router.get('/signin', function(req, res, next) {
 
 var connection = db_con.init();
 
+// 가입
 router.get('/signup/data', function(req, res, next) {
   var email = req.query.email;
   var password = req.query.password;
@@ -28,6 +29,8 @@ router.get('/signup/data', function(req, res, next) {
   });
 });
 
+
+// 로그인
 router.get('/signin/data', function(req, res, next) {
   var email = req.query.email;
   var password = req.query.password;
@@ -38,7 +41,7 @@ router.get('/signin/data', function(req, res, next) {
     if(!err) {
       res.send('home page');
     } else {
-      res.send('login failed !!!');
+      res.send({'success': false});
     }
   });
 });
@@ -48,6 +51,7 @@ router.get('/favor', function(req, res, next) {
   res.send('favor page');
 });
 
+// 사용자 성향정보 저장
 router.get('/favor/data', function(req, res, next) { 
   var uno = req.query.uno;
   var is_lessor = req.query.is_lessor;
