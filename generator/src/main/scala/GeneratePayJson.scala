@@ -17,9 +17,9 @@ object GeneratePayJson {
 
     var sb = new StringBuilder
 
-    for(i <- 0 to 100) {
+    for(i <- 0 to 10000) {
       var str = gson.toJson(new Category(
-        uno,
+        rd.nextInt(100),
         rd.nextInt(10000),
         rd.nextInt(50000),
         rd.nextInt(50000),
