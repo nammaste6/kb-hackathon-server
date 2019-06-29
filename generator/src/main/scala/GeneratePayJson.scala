@@ -10,7 +10,8 @@ object GeneratePayJson {
 
   def main(args: Array[String]): Unit = {
 
-    val uno = Integer.valueOf(args(0))
+    //val uno = Integer.valueOf(args(0))
+    val uno = 1;
     val rd = scala.util.Random
     val gson = new Gson
 
@@ -19,16 +20,16 @@ object GeneratePayJson {
     for(i <- 0 to 100) {
       var str = gson.toJson(new Category(
         uno,
-        rd.nextInt(100000),
-        rd.nextInt(100000),
-        rd.nextInt(100000),
-        rd.nextInt(100000),
-        rd.nextInt(100000),
-        rd.nextInt(100000),
-        rd.nextInt(100000),
-        rd.nextInt(100000),
-        rd.nextInt(100000),
-        rd.nextInt(100000)
+        rd.nextInt(10000),
+        rd.nextInt(50000),
+        rd.nextInt(50000),
+        rd.nextInt(10000),
+        rd.nextInt(10000),
+        rd.nextInt(30000),
+        rd.nextInt(10000),
+        rd.nextInt(10000),
+        rd.nextInt(10000),
+        rd.nextInt(10000)
       ))
 
       sb.append(str + "\n");
