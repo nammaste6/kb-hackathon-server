@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var batchRouter = require('./routes/batch');
 var mlRouter = require('./routes/ml');
+var testRouter = require('./routes/test_api');
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/batch', batchRouter);
 app.use('/ml', mlRouter);
+app.use('/test_api', testRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
